@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EnrolmentStatus {
+  ENROLLED
+  DEFERRED
+  WITHDRAWN
+  COMPLETED
+}
+
+enum Classification {
+  FAIL
+  PASS
+  MERIT
+  DISTINCTION
+}
+
+model Programme {
+  id         String   @id @default(cuid())
+  name       String
+  code       String   @unique
+  feeAmount  Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+
+  students Student[]
+
+  @@map("programmes")
+}
+
+model Student {
+  id            String          @id @default(cuid())
+  studentId     String          @unique
+  fullName      String
+  email         String          @unique
+  dob           DateTime
+  programmeId   String
+  programme     Programme       @relation(fields: [programmeId], references: [id])
+  academicYear  Int
+  status        EnrolmentStatus @default(ENROLLED)
+  feeDueDate    DateTime
+  createdAt     DateTime        @default(now())
+
+  payments    Payment[]
+  submissions Submission[]
+  grades      Grade[]
+
+  @@index([programmeId])
+  @@map("students")
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id])
+  amount          Decimal  @db.Decimal(10, 2)
+  paidAt          DateTime
+  referenceNumber String   @unique
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@map("payments")
+}
+
+model Assessment {
+  id        String   @id @default(cuid())
+  title     String
+  module    String
+  deadline  DateTime
+  createdAt DateTime @default(now())
+
+  submissions Submission[]
+  grades      Grade[]
+
+  @@map("assessments")
+}
+
+model Submission {
+  id           String     @id @default(cuid())
+  assessmentId String
+  assessment   Assessment @relation(fields: [assessmentId], references: [id])
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id])
+  fileName     String
+  filePath     String
+  mimeType     String
+  isLate       Boolean    @default(false)
+  submittedAt  DateTime   @default(now())
+
+  @@unique([assessmentId, studentId])
+  @@map("submissions")
+}
+
+model Grade {
+  id             String         @id @default(cuid())
+  assessmentId   String
+  assessment     Assessment     @relation(fields: [assessmentId], references: [id])
+  studentId      String
+  student        Student        @relation(fields: [studentId], references: [id])
+  score          Int
+  classification Classification
+  published      Boolean        @default(false)
+  gradedAt       DateTime       @default(now())
+
+  @@unique([assessmentId, studentId])
+  @@map("grades")
+}
