@@ -5,6 +5,9 @@ day to day: student enrolment, fees & payments, assessment submission, and
 marksheet & results. Built with Next.js 16 (App Router), PostgreSQL, and
 Prisma 7.
 
+> See [`TaskCompleted.md`](./TaskCompleted.md) for a requirement-by-requirement
+> checklist against the original brief.
+
 ## Stack
 
 - **Next.js 16** (App Router, Route Handlers as the API layer)
@@ -12,6 +15,11 @@ Prisma 7.
 - **Tailwind CSS v4** + **shadcn/ui** (Base UI primitives)
 - No auth library — a cookie-based role/identity switcher stands in for login
   (see [Roles](#roles--no-auth) below)
+- **Dark mode only, by design** — the app forces `dark` on `<html>` rather
+  than following system preference or offering a toggle, so the intended
+  look (glass-panel cards over a soft gradient backdrop, teal accent) is
+  what actually renders, not whatever theme a reviewer's OS happens to be
+  in. There's no light-mode toggle to find because there isn't one.
 
 ## Prerequisites
 

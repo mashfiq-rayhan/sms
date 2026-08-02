@@ -46,3 +46,12 @@ next-env.d.ts
 
 /src/generated/prisma
 Task.md
+
+# AI tool / editor skill caches (not part of the project)
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+
+# OS
+Thumbs.db
