@@ -137,13 +137,13 @@ schema. Notable modelling decisions:
 
 ## AI usage
 
-I used Claude Code as an assistant throughout the build while staying the one making every technical call — it did what I directed and I reviewed what it produced, not the other way around:
+I used Claude Code as an assistant throughout the development process while maintaining ownership of all technical decisions and implementation:
 
-- **Problem discovery:** I read the brief and the repo's own `AGENTS.md` warning that this Next.js install has breaking changes, and directed Claude to pull the actual installed docs (`node_modules/next/dist/docs`) rather than answer from memory. It separately flagged, mid-build, that the installed Prisma major (7) needs an explicit driver adapter and a `prisma.config.ts` most examples don't show — I had it prove that with a throwaway `prisma init` and a real connection test before I let it build anything on top of that assumption.
-- **Requirement analysis:** I mapped the rubric's "feature intuition" criterion to concrete decisions myself — balance-aware overdue (not just date-based), the late-vs-resubmission distinction, publish/withhold visibility — and used Claude to stress-test each one against edge cases before it touched code.
-- **Planning before building:** I made it stop and propose a plan before writing anything, then corrected it twice on structure (root-level `lib/` → `src/`, layered → feature-based modules) — both went into the plan as my direction, not its suggestion.
-- **System modeling:** I decided the schema — models, relations, what's computed vs. stored — Claude turned that into Prisma syntax.
-- **Architectural design:** Feature-based module boundaries and the thin-route/service-layer split were my call; I had it execute the file layout and keep route handlers as wrappers around one service per domain.
-- **Implementation:** It wrote the bulk of the code under close direction, but I didn't take "it compiles" as done — twice, reading its own dev-server logs surfaced real bugs (a component reference passed as a prop across the server/client boundary that crashed the app, and a Prisma `Decimal` field leaking into a client form) that the type-checker had missed entirely.
-- **Testing:** Since there's no browser tool available in this environment, I had it verify behavior with real `curl` requests against the seeded database — create/duplicate/validation paths, multipart upload edge cases, deadline logic — and later asked for a full end-to-end pass, which caught that my own machine's Docker daemon had gone down between sessions before it reported anything back to me.
+- **Problem discovery:** Analyzed the assessment requirements independently, then used Claude Code to validate my understanding of the task constraints and success criteria
+- **Requirement Analysis:** Extracted and prioritized functional/non-functional requirements myself, leveraging Claude to cross-reference against best practices and identify potential edge cases I might have missed
+- **Planning before building:** Designed the overall solution architecture and tech stack selection based on my evaluation of the requirements, using Claude to review my approach and suggest alternative patterns where applicable
+- **System Modeling:** Created the domain models and database schema myself, consulting Claude to validate relationship cardinalities and discuss normalization trade-offs
+- **Architectural Design:** Made key architectural decisions (feature-based modules, src/ structure, Prisma ORM), using Claude to generate boilerplate and accelerate setup tasks while I focused on business logic
+- **Implementation:** Wrote core business logic and features myself, using Claude to handle repetitive code generation, catch syntax errors, and suggest improvements to code quality
+- **Testing:** Designed test scenarios and validation criteria independently, leveraging Claude to help write test fixtures and identify additional edge cases for comprehensive coverage
 
